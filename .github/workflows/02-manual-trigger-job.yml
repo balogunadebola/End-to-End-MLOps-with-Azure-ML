@@ -18,15 +18,10 @@ jobs:
     - name: Setup Azure ML CLI
       run: |
         az extension add --name ml
-        az account set --subscription ${{ secrets.AZURE_CREDENTIALS.subscriptionId }}
     - name: Submit Azure ML Job
       run: |
-        az ml job create --file src/job.yml
-      env:
-        AZURE_CLIENT_ID: ${{ secrets.AZURE_CREDENTIALS.clientId }}
-        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CREDENTIALS.clientSecret }}
-        AZURE_TENANT_ID: ${{ secrets.AZURE_CREDENTIALS.tenantId }}
-        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_CREDENTIALS.subscriptionId }}
-     
+        az ml job create --file src/job.yml \
+          --resource-group adebolaml \
+          --workspace-name mlopsdev
 
 
