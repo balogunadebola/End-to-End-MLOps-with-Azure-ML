@@ -16,7 +16,7 @@ jobs:
     - name: Configure Azure CLI for preview extensions
       run: |
         az config set extension.use_dynamic_install=yes_without_prompt
-        az config set extension.dynamic_install_allow_preview=true
+        az extension remove --name ml || true
         az extension add --name ml --yes
 
     - name: Validate job file
@@ -28,5 +28,6 @@ jobs:
         az ml job create --file src/job.yml \
           --resource-group adebolaml \
           --workspace-name mlopsdev
+          --stream
 
 
