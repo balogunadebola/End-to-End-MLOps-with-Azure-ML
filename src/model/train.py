@@ -87,7 +87,7 @@ def parse_args():
     parser.add_argument("--training_data", dest='training_data',
                         type=str)
     parser.add_argument("--reg_rate", dest='reg_rate',
-                        type=float, default=0.06)
+                        type=float, default=0.11)
 
     # parse args
     args = parser.parse_args()
@@ -108,5 +108,5 @@ if __name__ == "__main__":
     main(args)
 
     # add space in logs
-    print("*" * 30)
+    print("*" * 10)
     print("\n\n")
