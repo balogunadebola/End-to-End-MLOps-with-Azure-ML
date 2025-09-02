@@ -108,5 +108,5 @@ if __name__ == "__main__":
     main(args)
 
     # add space in logs
-    print("*" * 30)
+    print("*" * 10)
     print("\n\n")
