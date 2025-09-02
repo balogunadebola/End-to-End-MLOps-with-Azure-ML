@@ -25,26 +25,23 @@ def main(args):
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
 
 
-def get_csvs_df(path: str) -> pd.DataFrame:
-    """Reads all CSV files from a directory into a single DataFrame."""
+def get_csvs_df(path):
+    """Read data from either a single CSV file or a folder containing CSV files"""
     if not os.path.exists(path):
-        raise RuntimeError(
-            "Cannot use non-existent path provided: "
-            f"{path}"
-        )
+        raise RuntimeError(f"Cannot use non-existent path provided: {path}")
 
-    files = [f for f in os.listdir(path) if f.endswith(".csv")]
-    if not files:
-        raise RuntimeError(
-            f"No CSV files found in directory: {path}"
-        )
+    # Check if path is a file
+    if os.path.isfile(path):
+        if path.endswith("csv"):
+            return pd.read_csv(path)
+        raise RuntimeError(f"Provided file is not a CSV: {path}")
 
-    dfs = []
-    for file in files:
-        df = pd.read_csv(os.path.join(path, file))
-        dfs.append(df)
+    # If path is a directory, look for CSV files
+    csv_files = glob.glob(f"{path}/*.csv")
+    if not csv_files:
+        raise RuntimeError(f"No CSV files found in provided data path: {path}")
 
-    return pd.concat(dfs, ignore_index=True)
+    return pd.concat((pd.read_csv(f) for f in csv_files), sort=False)
 
 
 def split_data(df):
@@ -60,16 +57,22 @@ def split_data(df):
     # Extract features and target
     X = df[
         [
-            "Pregnancies", "PlasmaGlucose", "DiastolicBloodPressure",
-            "TricepsThickness", "SerumInsulin", "BMI",
-            "DiabetesPedigree", "Age"
+            "Pregnancies",
+            "PlasmaGlucose",
+            "DiastolicBloodPressure",
+            "TricepsThickness",
+            "SerumInsulin",
+            "BMI",
+            "DiabetesPedigree",
+            "Age"
         ]
     ].values
     y = df["Diabetic"].values
 
     # Log class distribution
     unique_classes, class_counts = np.unique(y, return_counts=True)
-    print(f"Class distribution: {dict(zip(unique_classes, class_counts))}")
+    class_distribution = dict(zip(unique_classes, class_counts))
+    print(f"Class distribution: {class_distribution}")
 
     # Split the data
     X_train, X_test, y_train, y_test = train_test_split(
@@ -83,52 +86,37 @@ def split_data(df):
     return X_train, X_test, y_train, y_test
 
 
-def train_model(data_path: str, reg_rate: float):
-    """Trains a Ridge regression model with the given data and regularization."""
-    df = get_csvs_df(data_path)
-
-    if "target" not in df.columns:
-        raise RuntimeError("Expected a 'target' column in the dataset")
-
-    X = df.drop(columns=["target"])
-    y = df["target"]
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-
-    model = Ridge(alpha=reg_rate)
-    model.fit(X_train, y_train)
-
-    y_pred = model.predict(X_test)
-    mse = mean_squared_error(y_test, y_pred)
-
-    print(f"Model trained with regularization rate {reg_rate}")
-    print(f"Mean Squared Error on test set: {mse:.4f}")
-
-    return model, mse
+def train_model(reg_rate, X_train, X_test, y_train, y_test):
+    # train model
+    model = LogisticRegression(
+        C=1 / reg_rate,
+        solver="liblinear"
+    ).fit(X_train, y_train)
+    return model
 
 
 def parse_args():
-    """Parses command-line arguments."""
-    parser = argparse.ArgumentParser(
-        description="Train a Ridge regression model."
-    )
+    # setup arg parser
+    parser = argparse.ArgumentParser()
+
+    # add arguments
     parser.add_argument(
-        "--data_path",
-        dest="data_path",
-        type=str,
-        required=True,
-        help="Path to the folder containing CSV files.",
+        "--training_data",
+        dest="training_data",
+        type=str
     )
     parser.add_argument(
         "--reg_rate",
         dest="reg_rate",
         type=float,
-        default=0.11,
-        help="Regularization rate for Ridge regression.",
+        default=0.11
     )
-    return parser.parse_args()
+
+    # parse args
+    args = parser.parse_args()
+
+    # return args
+    return args
 
 
 # run script
@@ -139,8 +127,6 @@ if __name__ == "__main__":
 
     # parse args
     args = parse_args()
-
-    train_model(args.data_path, args.reg_rate)
 
     # run main function
     main(args)
