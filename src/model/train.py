@@ -27,7 +27,7 @@ def main(args):
 
 def get_csvs_df(path):
     """
-    Read data from either a single CSV file 
+    Read data from either a single CSV file
     or a folder containing CSV files
     """
     if not os.path.exists(path):
