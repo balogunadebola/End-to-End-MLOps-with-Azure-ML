@@ -28,18 +28,21 @@ def main(args):
 def get_csvs_df(path):
     """Read data from either a single CSV file or a folder containing CSV files"""
     if not os.path.exists(path):
-        raise RuntimeError(f"Cannot use non-existent path provided: {path}")
+        error_msg = f"Cannot use non-existent path provided: {path}"
+        raise RuntimeError(error_msg)
 
     # Check if path is a file
     if os.path.isfile(path):
         if path.endswith("csv"):
             return pd.read_csv(path)
-        raise RuntimeError(f"Provided file is not a CSV: {path}")
+        error_msg = f"Provided file is not a CSV: {path}"
+        raise RuntimeError(error_msg)
 
     # If path is a directory, look for CSV files
     csv_files = glob.glob(f"{path}/*.csv")
     if not csv_files:
-        raise RuntimeError(f"No CSV files found in provided data path: {path}")
+        error_msg = f"No CSV files found in provided data path: {path}"
+        raise RuntimeError(error_msg)
 
     return pd.concat((pd.read_csv(f) for f in csv_files), sort=False)
 
