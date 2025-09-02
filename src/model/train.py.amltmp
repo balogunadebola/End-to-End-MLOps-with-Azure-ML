@@ -29,7 +29,8 @@ def get_csvs_df(path):
     """Read data from either a single CSV file or a folder containing CSV files"""
     if not os.path.exists(path):
         raise RuntimeError(
-            f"Cannot use non-existent path provided: {path}"
+            "Cannot use non-existent path provided: "
+            f"{path}"
         )
 
     # Check if path is a file
@@ -98,7 +99,10 @@ def parse_args():
     # add arguments
     parser.add_argument("--training_data", dest="training_data", type=str)
     parser.add_argument(
-        "--reg_rate", dest="reg_rate", type=float, default=0.11
+        "--reg_rate",
+        dest="reg_rate",
+        type=float,
+        default=0.11
     )
 
     # parse args
