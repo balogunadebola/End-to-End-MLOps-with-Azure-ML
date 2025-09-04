@@ -28,7 +28,7 @@ def main(args):
 def get_csvs_df(path):
     """
     Read data from a CSV file 
-    or from a folder with CSVss
+    or from a folder with CSVs
     """
     if not os.path.exists(path):
         error_msg = f"Cannot use non-existent path provided: {path}"
