@@ -121,7 +121,7 @@ def parse_args():
     # parse args
     args = parser.parse_args()
 
-    # return all the args
+    # return args
     return args
 
 
