@@ -29,7 +29,7 @@ def main(args):
 def get_csvs_df(path):
     """
     Read data from an MLTable folder
-    or a CSV filepath
+    or a CSV filepaths
     """
     if not os.path.exists(path):
         error_msg = f"Cannot use non-existent path provided: {path}"
