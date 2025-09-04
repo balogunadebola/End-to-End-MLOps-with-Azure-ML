@@ -115,7 +115,7 @@ def parse_args():
         "--reg_rate",
         dest="reg_rate",
         type=float,
-        default=0.11
+        default=0.09
     )
 
     # parse args
