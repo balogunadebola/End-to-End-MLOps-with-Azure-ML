@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - mldev
 
 jobs:
   experiment:
