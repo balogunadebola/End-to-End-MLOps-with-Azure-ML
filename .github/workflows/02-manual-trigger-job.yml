@@ -1,33 +1,64 @@
-name: Trigger Azure ML Job
+name: Train Model in Dev and Prod
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  train:
+  experiment:
+    name: Train in Dev
     runs-on: ubuntu-latest
+    environment: development
     steps:
-    - name: Check out repo
-      uses: actions/checkout@main
-    - name: Azure login
-      uses: azure/login@v1
-      with:
-        creds: ${{secrets.AZURE_CREDENTIALS }}
-    - name: Configure Azure CLI for preview extensions
-      run: |
-        az config set extension.use_dynamic_install=yes_without_prompt
-        az extension remove --name ml || true
-        az extension add --name ml --yes
+      - name: Check out repo
+        uses: actions/checkout@v3
 
-    - name: Validate job file
-      run: |
-        az ml job validate --file src/job.yml --resource-group adebolaml --workspace-name mlopsdev
-        
-    - name: Submit Azure ML Job
-      run: |
-        az ml job create --file src/job.yml \
-          --resource-group adebolaml \
-          --workspace-name mlopsdev \
-          --stream
+      - name: Azure login (Dev)
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
 
+      - name: Configure Azure CLI for preview extensions
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az extension remove --name ml || true
+          az extension add --name ml --yes
 
+      - name: Submit Dev Job
+        run: |
+          az ml job create --file src/job.yml \
+            --resource-group adebolaml \
+            --workspace-name mlopsdev \
+            --set inputs.training_data=azureml:diabetes-dev@latest \
+            --set inputs.reg_rate=0.01 \
+            --stream
+
+  production:
+    name: Train in Prod
+    runs-on: ubuntu-latest
+    environment: production
+    needs: experiment
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Azure login (Prod)
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+
+      - name: Configure Azure CLI for preview extensions
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az extension remove --name ml || true
+          az extension add --name ml --yes
+
+      - name: Submit Prod Job
+        run: |
+          az ml job create --file src/job.yml \
+            --resource-group adebolaml \
+            --workspace-name mlopsdev \
+            --set inputs.training_data=azureml:diabetes-prod-folder@latest \
+            --set inputs.reg_rate=0.01 \
+            --stream
