@@ -121,8 +121,7 @@ def parse_args():
     # parse args
     args = parser.parse_args()
 
-
-    # return args
+    # return all the args
     return args
 
 
@@ -130,7 +129,7 @@ def parse_args():
 if __name__ == "__main__":
     # add space in logs
     print("\n\n")
-    print("*" * 80)
+    print("*" * 25)
 
     # parse args
     args = parse_args()
