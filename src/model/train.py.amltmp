@@ -121,11 +121,7 @@ def parse_args():
     # parse args
     args = parser.parse_args()
 
-<<<<<<< HEAD
     # return all the args
-=======
-    # return all args
->>>>>>> 97dda193b4926528d07329241bbf2e4aa972214a
     return args
 
 
