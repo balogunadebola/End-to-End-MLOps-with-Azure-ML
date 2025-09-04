@@ -40,7 +40,7 @@ def get_csvs_df(path):
     if os.path.exists(mltable_path):
         tbl = mltable.load(path)
         return tbl.to_pandas_dataframe()
-    
+
     # Otherwise assume CSV(s)
     if os.path.isfile(path):
         if path.endswith("csv"):
