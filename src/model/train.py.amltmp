@@ -2,6 +2,7 @@
 import argparse
 import glob
 import os
+import mltable
 
 import pandas as pd
 import numpy as np
@@ -27,14 +28,20 @@ def main(args):
 
 def get_csvs_df(path):
     """
-    Read data from either a single CSV file
-    or a folder containing CSV files
+    Read data from an MLTable folder
+    or a CSV filepath
     """
     if not os.path.exists(path):
         error_msg = f"Cannot use non-existent path provided: {path}"
         raise RuntimeError(error_msg)
 
-    # Check if path is a file
+    # Check if path contains MLTable definition
+    mltable_path = os.path.join(path, "MLTable")
+    if os.path.exists(mltable_path):
+        tbl = mltable.load(path)
+        return tbl.to_pandas_dataframe()
+    
+    # Otherwise assume CSV(s)
     if os.path.isfile(path):
         if path.endswith("csv"):
             return pd.read_csv(path)
