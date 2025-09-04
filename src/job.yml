@@ -7,11 +7,12 @@ command: >
 
 inputs:
   training_data:
-    type: mltable
-    path: ${{inputs.training_data}}
+    type: uri_folder
+    path: azureml:${{inputs.data_asset_name}}:1
   reg_rate: 0.01
+  data_asset_name: diabetes-dev-folder
 
-environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu:1
+environment: environment: AzureML-sklearn-1.0-ubuntu20.04-py38-cpu:1
 
 compute: MAyinde3
 
