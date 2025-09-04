@@ -7,8 +7,8 @@ command: >
 
 inputs:
   training_data:
-    type: uri_file
-    path: azureml://subscriptions/952fe447-cc92-4a68-a6bd-52160cc69c10/resourcegroups/adebolaml/workspaces/mlopsdev/datastores/workspaceartifactstore/paths/diabetes-dev.csv
+    type: mltable
+    path: ${{inputs.training_data}}
   reg_rate: 0.01
 
 environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu:1
