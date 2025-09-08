@@ -12,9 +12,7 @@ inputs:
   reg_rate: 0.01
   data_asset_name: diabetes-dev-folder
 
-environment: 
-  name: AzureML-sklearn-1.0-ubuntu20.04-py38-cpu
-  version: 1
+environment: azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest
 compute: MAyinde3
 experiment_name: diabetes-training-job
 display_name: diabetes-training-job
