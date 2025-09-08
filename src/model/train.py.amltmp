@@ -124,7 +124,7 @@ def train_model(reg_rate, X_train, X_test, y_train, y_test):
 
 
 def parse_args():
-    # setup arg parsers
+    # setup arg parsere
     parser = argparse.ArgumentParser()
 
     # add arguments
