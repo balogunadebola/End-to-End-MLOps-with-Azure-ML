@@ -26,19 +26,16 @@ def main(args):
 
 
 def get_csvs_df(path):
-    """
-    Read data from a CSV file
-    or from a folder with CSVs
-    """
+    """Read data from a CSV file or from a folder with CSVs."""
     print(f"[DEBUG] Looking for data in path: {path}")
-    
+
     if not os.path.exists(path):
         error_msg = f"Cannot use non-existent path provided: {path}"
         raise RuntimeError(error_msg)
 
     # Debug: List contents of the mounted directory
     print(f"[DEBUG] Directory contents: {os.listdir(path)}")
-    
+
     # Azure ML mounts data assets in a specific structure
     # Check if this is an Azure ML mounted path with data subdirectory
     data_subdir = os.path.join(path, "data")
@@ -58,14 +55,17 @@ def get_csvs_df(path):
     # If path is a directory, look for CSV files recursively
     csv_files = glob.glob(os.path.join(path, "**/*.csv"), recursive=True)
     print(f"[DEBUG] Found CSV files: {csv_files}")
-    
+
     if not csv_files:
         # Also check for CSV files without recursive search
         csv_files = glob.glob(os.path.join(path, "*.csv"))
         print(f"[DEBUG] Found CSV files (non-recursive): {csv_files}")
-        
+
     if not csv_files:
-        error_msg = f"No CSV files found in provided data path: {path}. Contents: {os.listdir(path)}"
+        error_msg = (
+            f"No CSV files found in provided data path: {path}. "
+            f"Contents: {os.listdir(path)}"
+        )
         raise RuntimeError(error_msg)
 
     print(f"[DEBUG] Loading {len(csv_files)} CSV files")
@@ -74,7 +74,7 @@ def get_csvs_df(path):
 
 def split_data(df):
     """
-    Split the data into training and testing sets
+    Split the data into training and testing sets.
 
     Parameters:
     df (DataFrame): The input dataframe containing the data
