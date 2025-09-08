@@ -47,7 +47,7 @@ def get_csvs_df(path):
         path = data_subdir
         print(f"[DEBUG] Data subdirectory contents: {os.listdir(path)}")
 
-    # Assume CSV(s) - first check if it's a single CSV file
+    # Assume CSV(s) and first check if it's a single CSV file
     if os.path.isfile(path):
         if path.endswith("csv"):
             print(f"[DEBUG] Reading single CSV file: {path}")
