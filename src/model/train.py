@@ -52,7 +52,7 @@ def get_csvs_df(path):
         error_msg = f"Provided file is not a CSV: {path}"
         raise RuntimeError(error_msg)
 
-    # If path is a directory, look for CSV files ONLY in this directory (not recursive)
+    # If path is a directory, look for CSV files ONLY in this directory
     csv_files = glob.glob(os.path.join(path, "*.csv"))
     print(f"[DEBUG] Found CSV files: {csv_files}")
 
@@ -119,7 +119,7 @@ def train_model(reg_rate, X_train, X_test, y_train, y_test):
 
 
 def parse_args():
-    # setup arg parserse
+    # setup arg parser
     parser = argparse.ArgumentParser()
 
     # add arguments
