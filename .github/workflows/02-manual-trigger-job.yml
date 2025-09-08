@@ -30,6 +30,7 @@ jobs:
           az ml job create --file src/job.yml \
             --resource-group adebolaml \
             --workspace-name mlopsdev \
+            --set inputs.reg_rate=0.01 \
             --stream
 
   production:
@@ -57,4 +58,5 @@ jobs:
           az ml job create --file src/job.yml \
             --resource-group adebolaml \
             --workspace-name mlopsdev \
+            --set inputs.reg_rate=0.01 \
             --stream
