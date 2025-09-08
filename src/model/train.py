@@ -52,14 +52,9 @@ def get_csvs_df(path):
         error_msg = f"Provided file is not a CSV: {path}"
         raise RuntimeError(error_msg)
 
-    # If path is a directory, look for CSV files recursively
-    csv_files = glob.glob(os.path.join(path, "**/*.csv"), recursive=True)
+    # If path is a directory, look for CSV files ONLY in this directory (not recursive)
+    csv_files = glob.glob(os.path.join(path, "*.csv"))
     print(f"[DEBUG] Found CSV files: {csv_files}")
-
-    if not csv_files:
-        # Also check for CSV files without recursive search
-        csv_files = glob.glob(os.path.join(path, "*.csv"))
-        print(f"[DEBUG] Found CSV files (non-recursive): {csv_files}")
 
     if not csv_files:
         error_msg = (
