@@ -8,6 +8,7 @@ command: >
 inputs:
   training_data:
     type: uri_folder
+    path: azureml:${{inputs.dataset_name}}
     mode: download
   reg_rate: 0.01
 
