@@ -134,6 +134,14 @@ if __name__ == "__main__":
     # parse args
     args = parse_args()
 
+    # 🔍 Debug logging for training_data
+    print(f"[DEBUG] Resolved training_data arg: {args.training_data}")
+    import os
+    if os.path.exists(args.training_data):
+        print(f"[DEBUG] Path exists. Contents: {os.listdir(args.training_data)}")
+    else:
+        print("[DEBUG] Path does NOT exist!")
+
     # run main function
     main(args)
 
