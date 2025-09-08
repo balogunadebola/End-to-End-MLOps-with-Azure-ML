@@ -135,7 +135,7 @@ def parse_args():
         default=0.05
     )
 
-    # parse args
+    # parse arges
     args = parser.parse_args()
 
     # return all the arges
