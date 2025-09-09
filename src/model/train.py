@@ -14,9 +14,25 @@ import mlflow
 def main(args):
     # TO DO: enable autologging
     mlflow.autolog()
+    # If running inside AML, resolve input to a local path
+    training_data_path = args.training_data
+    if training_data_path.startswith("azureml:"):
+        # Handle as dataset reference
+        run = Run.get_context()
+        ws = run.experiment.workspace
+        dataset_name, version = training_data_path.replace(
+            "azureml:", ""
+        ).split(":")
+        dataset = Dataset.get_by_name(
+            ws,
+            name=dataset_name,
+            version=version)
+        training_data_path = dataset.as_mount()
+
+    print("DEBUG >>> Resolved training_data path:", training_data_path)
 
     # read data
-    df = get_csvs_df(args.training_data)
+    df = get_csvs_df(training_data_path)
 
     # split data
     X_train, X_test, y_train, y_test = split_data(df)
