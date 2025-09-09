@@ -2,7 +2,6 @@
 import argparse
 import glob
 import os
-import glob
 
 import pandas as pd
 import numpy as np
@@ -25,11 +24,9 @@ def main(args):
     # train model
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
 
-
-
 def get_csvs_df(path):
     if not os.path.exists(path):
-        raise RuntimeError(f"[ERROR] Training data path does not exist: {path}")
+        raise RuntimeError(f"[ERROR] Training data not found: {path}")
 
     if os.path.isfile(path):
         # If it's a single file
@@ -50,7 +47,6 @@ def get_csvs_df(path):
         return pd.concat(df_list, ignore_index=True)
 
     raise RuntimeError(f"[ERROR] Path is neither a file nor folder: {path}")
-
 
 def split_data(df):
     """
