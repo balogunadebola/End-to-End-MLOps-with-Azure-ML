@@ -16,6 +16,7 @@ def resolve_path(path: str) -> str:
         return "./data"   # <-- point to your local folder of CSVs
     return path
 
+
 # define functions
 def main(args):
     # TO DO: enable autologging
@@ -32,8 +33,6 @@ def main(args):
 
     # train model
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
-
-
 
 def get_csvs_df(path):
     if not os.path.exists(path):
