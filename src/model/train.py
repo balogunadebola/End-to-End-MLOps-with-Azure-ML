@@ -7,8 +7,13 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from azureml.core import Run, Dataset
 import mlflow
+
+try:
+    from azureml.core import Run, Dataset
+except ImportError:
+    Run = None
+    Dataset = None
 
 
 # define functions
@@ -29,6 +34,11 @@ def main(args):
             name=dataset_name,
             version=version)
         training_data_path = dataset.as_mount()
+    if Run:
+        run = Run.get_context()
+    else:
+        run = None
+
 
     print("DEBUG >>> Resolved training_data path:", training_data_path)
 
