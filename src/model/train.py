@@ -24,6 +24,7 @@ def main(args):
     # train model
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
 
+
 def get_csvs_df(path):
     if not os.path.exists(path):
         raise RuntimeError(f"[ERROR] Training data not found: {path}")
@@ -41,12 +42,13 @@ def get_csvs_df(path):
         csv_files = glob.glob(os.path.join(path, "*.csv"))
         if not csv_files:
             raise RuntimeError(f"[ERROR] No CSV files found in folder: {path}")
-        
+       
         print(f"[DEBUG] Found {len(csv_files)} CSVs in folder {path}")
         df_list = [pd.read_csv(f) for f in csv_files]
         return pd.concat(df_list, ignore_index=True)
 
     raise RuntimeError(f"[ERROR] Path is neither a file nor folder: {path}")
+
 
 def split_data(df):
     """
