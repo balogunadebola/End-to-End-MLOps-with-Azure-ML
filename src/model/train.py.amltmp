@@ -47,7 +47,7 @@ def get_csvs_df(path):
         df_list = [pd.read_csv(f) for f in csv_files]
         return pd.concat(df_list, ignore_index=True)
 
-     raise RuntimeError(f"[ERROR] Path is neither a file nor folder: {path}")
+    raise RuntimeError(f"[ERROR] Path is neither a file nor folder: {path}")
 
 
 def split_data(df):
