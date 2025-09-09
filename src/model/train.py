@@ -42,7 +42,7 @@ def get_csvs_df(path):
         csv_files = glob.glob(os.path.join(path, "*.csv"))
         if not csv_files:
             raise RuntimeError(f"[ERROR] No CSV files found in folder: {path}")
-       
+
         print(f"[DEBUG] Found {len(csv_files)} CSVs in folder {path}")
         df_list = [pd.read_csv(f) for f in csv_files]
         return pd.concat(df_list, ignore_index=True)
