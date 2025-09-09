@@ -34,6 +34,7 @@ def main(args):
     # train model
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
 
+
 def get_csvs_df(path):
     if not os.path.exists(path):
         raise RuntimeError("Cannot use non-existent path provided")
