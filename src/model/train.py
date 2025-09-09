@@ -38,8 +38,6 @@ def main(args):
         run = Run.get_context()
     else:
         run = None
-
-
     print("DEBUG >>> Resolved training_data path:", training_data_path)
 
     # read data
