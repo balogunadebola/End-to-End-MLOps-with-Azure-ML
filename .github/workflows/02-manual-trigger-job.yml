@@ -10,6 +10,8 @@ jobs:
     name: Train in Dev
     runs-on: ubuntu-latest
     environment: development
+    env:
+      DATASET_NAME: diabetes-dev-folder:1
     steps:
       - name: Check out repo
         uses: actions/checkout@v3
@@ -17,7 +19,7 @@ jobs:
       - name: Azure login (Dev)
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Configure Azure CLI for preview extensions
         run: |
@@ -30,7 +32,7 @@ jobs:
           az ml job create --file src/job.yml \
             --resource-group adebolaml \
             --workspace-name mlopsdev \
-            --set inputs.training_data=azureml:diabetes-dev-folder:1 \
+            --set inputs.training_data=azureml:${{ env.DATASET_NAME }} \
             --set inputs.reg_rate=0.01 \
             --stream
 
@@ -39,6 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: experiment
+    env:
+      DATASET_NAME: diabetes-prod:1
     steps:
       - name: Check out repo
         uses: actions/checkout@v3
@@ -46,7 +50,7 @@ jobs:
       - name: Azure login (Prod)
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Configure Azure CLI for preview extensions
         run: |
@@ -59,6 +63,6 @@ jobs:
           az ml job create --file src/job.yml \
             --resource-group adebolaml \
             --workspace-name mlopsdev \
-            --set inputs.training_data=azureml:diabetes-prod:1 \
+            --set inputs.training_data=azureml:${{ env.DATASET_NAME }} \
             --set inputs.reg_rate=0.01 \
             --stream
