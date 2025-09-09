@@ -26,7 +26,7 @@ def main(args):
     print(f"[DEBUG] Using training path: {training_path}")
 
     # read data
-    df = get_csvs_df(args.training_path)
+    df = get_csvs_df(training_path)
 
     # split data
     X_train, X_test, y_train, y_test = split_data(df)
