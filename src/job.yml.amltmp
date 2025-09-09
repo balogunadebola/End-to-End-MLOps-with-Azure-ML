@@ -8,6 +8,7 @@ command: >
 inputs:
   training_data:
     type: uri_folder
+    path: azureml:diabetes-dev-folder:1
     mode: download
   reg_rate: 0.01
 

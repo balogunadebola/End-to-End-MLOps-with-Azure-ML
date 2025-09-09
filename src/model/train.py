@@ -2,6 +2,7 @@
 import argparse
 import glob
 import os
+import glob
 
 import pandas as pd
 import numpy as np
@@ -25,46 +26,30 @@ def main(args):
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
 
 
+
 def get_csvs_df(path):
-    """Read data from a CSV file or from a folder with CSVs."""
-    print(f"[DEBUG] Looking for data in path: {path}")
-
     if not os.path.exists(path):
-        error_msg = f"Cannot use non-existent path provided: {path}"
-        raise RuntimeError(error_msg)
+        raise RuntimeError(f"[ERROR] Training data path does not exist: {path}")
 
-    # Debug: List contents of the mounted directory
-    print(f"[DEBUG] Directory contents: {os.listdir(path)}")
-
-    # Azure ML mounts data assets in a specific structure
-    # Check if this is an Azure ML mounted path with data subdirectory
-    data_subdir = os.path.join(path, "data")
-    if os.path.exists(data_subdir):
-        print(f"[DEBUG] Found 'data' subdirectory, using: {data_subdir}")
-        path = data_subdir
-        print(f"[DEBUG] Data subdirectory contents: {os.listdir(path)}")
-
-    # Assume CSV(s) - first check if it's a single CSV file
     if os.path.isfile(path):
-        if path.endswith("csv"):
-            print(f"[DEBUG] Reading single CSV file: {path}")
+        # If it's a single file
+        if path.endswith(".csv"):
+            print(f"[DEBUG] Found single CSV file: {path}")
             return pd.read_csv(path)
-        error_msg = f"Provided file is not a CSV: {path}"
-        raise RuntimeError(error_msg)
+        else:
+            raise RuntimeError(f"[ERROR] Provided file is not a CSV: {path}")
 
-    # If path is a directory, look for CSV files ONLY in this directory
-    csv_files = glob.glob(os.path.join(path, "*.csv"))
-    print(f"[DEBUG] Found CSV files: {csv_files}")
+    if os.path.isdir(path):
+        # If it's a folder, grab all CSV files inside
+        csv_files = glob.glob(os.path.join(path, "*.csv"))
+        if not csv_files:
+            raise RuntimeError(f"[ERROR] No CSV files found in folder: {path}")
+        
+        print(f"[DEBUG] Found {len(csv_files)} CSVs in folder {path}")
+        df_list = [pd.read_csv(f) for f in csv_files]
+        return pd.concat(df_list, ignore_index=True)
 
-    if not csv_files:
-        error_msg = (
-            f"No CSV files found in provided data path: {path}. "
-            f"Contents: {os.listdir(path)}"
-        )
-        raise RuntimeError(error_msg)
-
-    print(f"[DEBUG] Loading {len(csv_files)} CSV files")
-    return pd.concat((pd.read_csv(f) for f in csv_files), sort=False)
+    raise RuntimeError(f"[ERROR] Path is neither a file nor folder: {path}")
 
 
 def split_data(df):
