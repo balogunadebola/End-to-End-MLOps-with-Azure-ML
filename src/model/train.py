@@ -27,7 +27,7 @@ def main(args):
 
 def get_csvs_df(path):
     if not os.path.exists(path):
-        raise RuntimeError(f"[ERROR] Training data not found: {path}")
+        raise RuntimeError("Cannot use non-existent path provided")
 
     if os.path.isfile(path):
         # If it's a single file
@@ -35,19 +35,19 @@ def get_csvs_df(path):
             print(f"[DEBUG] Found single CSV file: {path}")
             return pd.read_csv(path)
         else:
-            raise RuntimeError(f"[ERROR] Provided file is not a CSV: {path}")
+            raise RuntimeError("Provided file is not a CSV")
 
     if os.path.isdir(path):
         # If it's a folder, grab all CSV files inside
         csv_files = glob.glob(os.path.join(path, "*.csv"))
         if not csv_files:
-            raise RuntimeError(f"[ERROR] No CSV files found in folder: {path}")
+            raise RuntimeError("No CSV files found in provided data")
 
         print(f"[DEBUG] Found {len(csv_files)} CSVs in folder {path}")
         df_list = [pd.read_csv(f) for f in csv_files]
         return pd.concat(df_list, ignore_index=True)
 
-    raise RuntimeError(f"[ERROR] Path is neither a file nor folder: {path}")
+     raise RuntimeError(f"[ERROR] Path is neither a file nor folder: {path}")
 
 
 def split_data(df):
