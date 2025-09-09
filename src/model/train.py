@@ -9,45 +9,30 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 import mlflow
 
-try:
-    from azureml.core import Run, Dataset
-except ImportError:
-    Run = None
-    Dataset = None
 
+def resolve_path(path: str) -> str:
+    if path.startswith("azureml:"):
+        # In local runs, replace with a test folder
+        return "./data"   # <-- point to your local folder of CSVs
+    return path
 
 # define functions
 def main(args):
     # TO DO: enable autologging
     mlflow.autolog()
-    # If running inside AML, resolve input to a local path
-    training_data_path = args.training_data
-    if training_data_path.startswith("azureml:"):
-        # Handle as dataset reference
-        run = Run.get_context()
-        ws = run.experiment.workspace
-        dataset_name, version = training_data_path.replace(
-            "azureml:", ""
-        ).split(":")
-        dataset = Dataset.get_by_name(
-            ws,
-            name=dataset_name,
-            version=version)
-        training_data_path = dataset.as_mount()
-    if Run:
-        run = Run.get_context()
-    else:
-        run = None
-    print("DEBUG >>> Resolved training_data path:", training_data_path)
+
+    training_path = resolve_path(args.training_data)
+    print(f"[DEBUG] Using training path: {training_path}")
 
     # read data
-    df = get_csvs_df(training_data_path)
+    df = get_csvs_df(args.training_path)
 
     # split data
     X_train, X_test, y_train, y_test = split_data(df)
 
     # train model
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
+
 
 
 def get_csvs_df(path):
@@ -140,10 +125,10 @@ def parse_args():
         "--reg_rate",
         dest="reg_rate",
         type=float,
-        default=0.05
+        default=0.01
     )
 
-    # parse arges
+    # parse args
     args = parser.parse_args()
 
     # return all the argees
