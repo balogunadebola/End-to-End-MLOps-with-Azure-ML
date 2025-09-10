@@ -10,24 +10,13 @@ from sklearn.linear_model import LogisticRegression
 import mlflow
 
 
-def resolve_path(path: str) -> str:
-    if path.startswith("azureml:"):
-        # In local runs, replace with a test folder
-        return "./data"   # <-- point to your local folder of CSVs
-    return path
-
-
 # define functions
 def main(args):
     # TO DO: enable autologging
     mlflow.autolog()
 
-    training_path = resolve_path(args.training_data)
-    print(f"[DEBUG] Using training path: {training_path}")
-    print(f"[DEBUG] os.path.exists? {os.path.exists(training_path)}")
-
     # read data
-    df = get_csvs_df(training_path)
+    df = get_csvs_df(args.training_data)
 
     # split data
     X_train, X_test, y_train, y_test = split_data(df)
@@ -37,28 +26,45 @@ def main(args):
 
 
 def get_csvs_df(path):
+    """Read data from a CSV file or from a folder with CSVs."""
+    print(f"[DEBUG] Looking for data in path: {path}")
+
     if not os.path.exists(path):
-        raise RuntimeError("Cannot use non-existent path provided")
+        error_msg = f"Cannot use non-existent path provided: {path}"
+        raise RuntimeError(error_msg)
 
+    # Debug: List contents of the mounted directory
+    print(f"[DEBUG] Directory contents: {os.listdir(path)}")
+
+    # Azure ML mounts data assets in a specific structure
+    # Check if this is an Azure ML mounted path with data subdirectory
+    data_subdir = os.path.join(path, "data")
+    if os.path.exists(data_subdir):
+        print(f"[DEBUG] Found 'data' subdirectory, using: {data_subdir}")
+        path = data_subdir
+        print(f"[DEBUG] Data subdirectory contents: {os.listdir(path)}")
+
+    # Assume CSV(s) - first check if it's a single CSV file
     if os.path.isfile(path):
-        # If it's a single file
-        if path.endswith(".csv"):
-            print(f"[DEBUG] Found single CSV file: {path}")
+        if path.endswith("csv"):
+            print(f"[DEBUG] Reading single CSV file: {path}")
             return pd.read_csv(path)
-        else:
-            raise RuntimeError("Provided file is not a CSV")
+        error_msg = f"Provided file is not a CSV: {path}"
+        raise RuntimeError(error_msg)
 
-    if os.path.isdir(path):
-        # If it's a folder, grab all CSV files inside
-        csv_files = glob.glob(os.path.join(path, "*.csv"))
-        if not csv_files:
-            raise RuntimeError("No CSV files found in provided data")
+    # If path is a directory, look for CSV files ONLY in this directory
+    csv_files = glob.glob(os.path.join(path, "*.csv"))
+    print(f"[DEBUG] Found CSV files: {csv_files}")
 
-        print(f"[DEBUG] Found {len(csv_files)} CSVs in folder {path}")
-        df_list = [pd.read_csv(f) for f in csv_files]
-        return pd.concat(df_list, ignore_index=True)
+    if not csv_files:
+        error_msg = (
+            f"No CSV files found in provided data path: {path}. "
+            f"Contents: {os.listdir(path)}"
+        )
+        raise RuntimeError(error_msg)
 
-    raise RuntimeError(f"[ERROR] Path is neither a file nor folder: {path}")
+    print(f"[DEBUG] Loading {len(csv_files)} CSV files")
+    return pd.concat((pd.read_csv(f) for f in csv_files), sort=False)
 
 
 def split_data(df):
@@ -120,18 +126,16 @@ def parse_args():
     parser.add_argument(
         "--training_data",
         dest="training_data",
-        type=str,
-        required=True,
-        help="Path to training data(uri_folder or local path)"
+        type=str
     )
     parser.add_argument(
         "--reg_rate",
         dest="reg_rate",
         type=float,
-        default=0.01
+        default=0.05
     )
 
-    # parse args
+    # parse arges
     args = parser.parse_args()
 
     # return all the argees
