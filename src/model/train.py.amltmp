@@ -29,7 +29,7 @@ def main(args):
         print(f"[DEBUG] Files in training path: {os.listdir(training_path)}")
 
     # read data
-    df = get_csvs_df(args.training_path)
+    df = get_csvs_df(training_path)
 
     # split data
     X_train, X_test, y_train, y_test = split_data(df)
@@ -121,7 +121,7 @@ def parse_args():
     # add arguments
     parser.add_argument(
         "--training_data",
-        dest="training_data",
+        dest="Path to training data",
         type=str
     )
     parser.add_argument(
