@@ -22,7 +22,7 @@ def main(args):
     # TO DO: enable autologging
     mlflow.autolog()
 
-    training_path = resolve_path(args.training_data)
+    training_path = args.training_data
     print(f"[DEBUG] Using training path: {training_path}")
 
     # read data
