@@ -132,7 +132,7 @@ def parse_args():
         "--reg_rate",
         dest="reg_rate",
         type=float,
-        default=0.05
+        default=0.01
     )
 
     # parse arges
@@ -146,7 +146,7 @@ def parse_args():
 if __name__ == "__main__":
     # add space in logs
     print("\n\n")
-    print("*" * 25)
+    print("*" * 60)
 
     # parse args
     args = parse_args()
@@ -155,5 +155,5 @@ if __name__ == "__main__":
     main(args)
 
     # add space in logs
-    print("*" * 10)
+    print("*" * 60)
     print("\n\n")
