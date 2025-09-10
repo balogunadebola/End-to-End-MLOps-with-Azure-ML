@@ -31,8 +31,8 @@ jobs:
           az ml job create --file src/job.yml \
             --resource-group adebolaml \
             --workspace-name mlopsdev \
+            --set inputs.training_data.path=azureml:diabetes-dev-folder@latest \
             --set inputs.training_data.type=uri_folder \
-            --set inputs.training_data=azureml:diabetes-dev-folder:1 \
             --set inputs.reg_rate=0.01 \
             --stream
 
@@ -62,7 +62,7 @@ jobs:
           az ml job create --file src/job.yml \
             --resource-group adebolaml \
             --workspace-name mlopsdev \
+            --set inputs.training_data.path=azureml:diabetes-prod@latest \
             --set inputs.training_data.type=uri_folder \
-            --set inputs.training_data=azureml:diabetes-prod:1 \
             --set inputs.reg_rate=0.01 \
             --stream
