@@ -121,8 +121,15 @@ def parse_args():
     # add arguments
     parser.add_argument(
         "--training_data",
-        dest="Path to training data",
-        type=str
+        dest="training_data",
+        type=str,
+        help="Path to training data"
+    )
+    parser.add_argument(
+        "--training_path",
+        dest="training_data",
+        type=str,
+        help="(Alias) Path to training data"
     )
     parser.add_argument(
         "--reg_rate",
