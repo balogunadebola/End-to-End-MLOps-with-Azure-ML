@@ -120,7 +120,7 @@ def parse_args():
 
     # add arguments
     parser.add_argument(
-        "--training_path",
+        "--training_data",
         dest="Path to training data",
         type=str
     )
