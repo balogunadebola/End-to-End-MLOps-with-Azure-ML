@@ -22,11 +22,14 @@ def main(args):
     # TO DO: enable autologging
     mlflow.autolog()
 
-    training_path = args.training_data
+    training_path = resolve_path(args.training_data)
     print(f"[DEBUG] Using training path: {training_path}")
+    print(f"[DEBUG] os.path.exists? {os.path.exists(training_path)}")
+    if os.path.exists(training_path):
+        print(f"[DEBUG] Files in training path: {os.listdir{training_path}}")
 
     # read data
-    df = get_csvs_df(training_path)
+    df = get_csvs_df(args.training_path)
 
     # split data
     X_train, X_test, y_train, y_test = split_data(df)
