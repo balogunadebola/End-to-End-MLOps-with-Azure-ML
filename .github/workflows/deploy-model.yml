@@ -28,7 +28,7 @@ jobs:
       - name: Create deployment YAML dynamically
         run: |
           cat <<EOF > deployment.yml
-          $schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+          \$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
           name: blue
           endpoint_name: diabetes-endpoint
           model: azureml:diabetes-classifier:1
