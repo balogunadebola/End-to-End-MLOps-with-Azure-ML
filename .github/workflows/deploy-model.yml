@@ -41,6 +41,12 @@ jobs:
 
           # Deploy latest model version
           az ml online-deployment create \
-            --file deployments.yml \
+            --name blue \
+            --endpoint $ENDPOINT_NAME \
+            --model $MODEL_NAME:latest \
+            --type mlflow_model \
+            --instance-type Standard_B1s \
+            --instance-count 1 \
+            --all-traffic \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
