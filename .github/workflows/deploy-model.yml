@@ -1,7 +1,7 @@
 name: Deploy model to endpoint
 
 on:
-  workflow_dispatch:  # allows manual trigger
+  workflow_dispatch:
   push:
     branches:
       - main
