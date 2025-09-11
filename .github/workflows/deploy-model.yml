@@ -34,7 +34,6 @@ jobs:
           # Create endpoint (idempotent - won’t fail if already exists)
           az ml online-endpoint update \
             --name $ENDPOINT_NAME \
-            --auth-mode key \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
 
