@@ -32,7 +32,7 @@ jobs:
           MODEL_NAME=diabetes-classifier
 
           # Create endpoint (idempotent - won’t fail if already exists)
-          az ml online-endpoint update \
+          az ml online-endpoint create \
             --name $ENDPOINT_NAME \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
@@ -41,11 +41,7 @@ jobs:
 
           # Deploy latest model version
           az ml online-deployment create \
-            --name blue \
-            --endpoint $ENDPOINT_NAME \
-            --model $MODEL_NAME:latest \
-            --instance-type Standard_DS3_v2 \
-            --instance-count 1 \
-            --all-traffic \
+            --file deployment.yml \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
+            --all-traffic
