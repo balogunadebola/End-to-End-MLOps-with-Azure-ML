@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # 🔑 Bind job to the right environment
-    environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
 
     steps:
       - name: Checkout repo
