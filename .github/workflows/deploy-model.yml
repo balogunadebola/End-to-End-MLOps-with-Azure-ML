@@ -10,7 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    # 🔑 Bind job to the right environment
+    # Bind job to the right environment
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
 
     steps:
