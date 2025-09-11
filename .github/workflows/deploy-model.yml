@@ -25,6 +25,18 @@ jobs:
       - name: Setup Azure ML CLI
         run: |
           pip install -U azure-ai-ml azureml-mlflow
+      - name: Create deployment YAML dynamically
+        run: |
+          cat <<EOF > deployment.yml
+          name: blue
+          endpoint_name: diabetes-endpoint
+          model: azureml:diabetes-classifier:1
+          model_type: mlflow_model
+          instance_type: Standard_B1s
+          instance_count: 1
+          traffic:
+            blue: 100
+          EOF
 
       - name: Deploy latest registered model
         run: |
@@ -37,16 +49,8 @@ jobs:
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
 
-          echo "Deploying model $MODEL_NAME:latest to endpoint $ENDPOINT_NAME..."
-
           # Deploy latest model version
           az ml online-deployment create \
-            --name blue \
-            --endpoint $ENDPOINT_NAME \
-            --model $MODEL_NAME:latest \
-            --type mlflow_model \
-            --instance-type Standard_B1s \
-            --instance-count 1 \
-            --all-traffic \
+            --file deployment.yml \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
