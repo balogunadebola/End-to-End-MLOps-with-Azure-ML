@@ -38,6 +38,8 @@ jobs:
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
 
+          echo "Deploying model $MODEL_NAME:latest to endpoint $ENDPOINT_NAME..."
+
           # Deploy latest model version
           az ml online-deployment create \
             --name blue \
@@ -45,4 +47,6 @@ jobs:
             --model $MODEL_NAME:latest \
             --instance-type Standard_DS3_v2 \
             --instance-count 1 \
-            --all-traffic
+            --all-traffic \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
