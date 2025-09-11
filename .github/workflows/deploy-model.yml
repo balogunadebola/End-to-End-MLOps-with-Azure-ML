@@ -28,14 +28,12 @@ jobs:
       - name: Create deployment YAML dynamically
         run: |
           cat <<EOF > deployment.yml
+          $schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
           name: blue
           endpoint_name: diabetes-endpoint
           model: azureml:diabetes-classifier:1
-          model_type: mlflow_model
           instance_type: Standard_B1s
           instance_count: 1
-          traffic:
-            blue: 100
           EOF
 
       - name: Deploy latest registered model
