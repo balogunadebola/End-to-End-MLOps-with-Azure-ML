@@ -32,7 +32,8 @@ jobs:
           name: blue
           endpoint_name: diabetes-endpoint
           model: azureml:diabetes-classifier:1
-          instance_type: Standard_DS2_v2
+          model_format: mlflow
+          instance_type: Standard_DS3_v2
           instance_count: 1
           EOF
 
