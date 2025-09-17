@@ -43,8 +43,14 @@ jobs:
 
           # Create endpoint (idempotent - won’t fail if already exists)
           az ml online-endpoint update \
-            --name blue \
             --name $ENDPOINT_NAME \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+
+          # Deploy latest model version
+          az ml online-deployment update \
+            --name blue \
+            --endpoint-name diabetes-endpoint \
             --file deployment.yml \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
