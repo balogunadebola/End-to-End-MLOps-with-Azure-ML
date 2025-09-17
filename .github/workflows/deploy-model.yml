@@ -34,7 +34,6 @@ jobs:
           model: azureml:diabetes-classifier:1
           instance_type: Standard_DS2_v2
           instance_count: 1
-          environment: azureml://registries/azureml/environments/sklearn-1.0-ubuntu20.04-py38-cpu/versions/20
           EOF
 
       - name: Deploy latest registered model
