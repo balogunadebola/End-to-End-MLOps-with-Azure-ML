@@ -38,19 +38,41 @@ jobs:
 
       - name: Deploy latest registered model
         run: |
+          set -e
           ENDPOINT_NAME=diabetes-endpoint
-          MODEL_NAME=diabetes-classifier
+          DEPLOYMENT_NAME=blue
 
-          # Create endpoint (idempotent - won’t fail if already exists)
-          az ml online-endpoint update \
+          # Ensure endpoint exists (idempotent)
+          az ml online-endpoint show \
             --name $ENDPOINT_NAME \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
+            || az ml online-endpoint create \
+              --name $ENDPOINT_NAME \
+              --file endpoint.yml \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
 
-          # Deploy latest model version
-          az ml online-deployment update \
-            --name blue \
-            --endpoint-name diabetes-endpoint \
+          echo "🔄 Attempting deployment update..."
+          if ! az ml online-deployment update \
+            --name $DEPLOYMENT_NAME \
+            --endpoint-name $ENDPOINT_NAME \
             --file deployment.yml \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}; then
+
+            echo "⚠️ Update failed — deployment may be in unrecoverable state. Deleting and recreating..."
+            az ml online-deployment delete \
+              --name $DEPLOYMENT_NAME \
+              --endpoint-name $ENDPOINT_NAME \
+              --yes \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+
+            az ml online-deployment create \
+              --name $DEPLOYMENT_NAME \
+              --endpoint-name $ENDPOINT_NAME \
+              --file deployment.yml \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+          fi
