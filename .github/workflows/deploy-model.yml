@@ -72,16 +72,7 @@ jobs:
 
       - name: Deploy latest registered model
         run: |
-          ENDPOINT_NAME=diabetes-endpoint
-          MODEL_NAME=diabetes-classifier
-
-          # Create endpoint (idempotent - won’t fail if already exists)
-          az ml online-endpoint create \
-            --name $ENDPOINT_NAME \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
-
-          # Deploy latest model version
+          # Deploy model (this will create the endpoint if it doesn't exist)
           az ml online-deployment create \
             --file deployment.yml \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
