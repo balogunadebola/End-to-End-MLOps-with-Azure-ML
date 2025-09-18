@@ -77,4 +77,3 @@ jobs:
             --file deployment.yml \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
-            --all-traffic
