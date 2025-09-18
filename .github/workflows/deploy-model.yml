@@ -25,6 +25,24 @@ jobs:
       - name: Setup Azure ML CLI
         run: |
           pip install -U azure-ai-ml azureml-mlflow
+      - name: Create conda environment file
+        run: |
+          cat > conda_env.yml << 'EOF'
+          name: mlflow-env
+          channels:
+            - conda-forge
+            - defaults
+          dependencies:
+            - python=3.8
+            - pip
+            - setuptools>=65.0
+            - pip:
+              - mlflow>=2.0.0
+              - scikit-learn>=1.0.0
+              - pandas>=1.3.0
+              - numpy>=1.21.0
+              - azureml-inference-server-http
+          EOF
       - name: Create environment YAML
         run: |
           cat > environment.yml << 'EOF'
@@ -32,26 +50,12 @@ jobs:
           name: diabetes-classifier-env
           version: 1
           image: mcr.microsoft.com/azureml/minimal-ubuntu20.04-py38-cpu-inference:latest
-          conda_file: |
-            name: mlflow-env
-            channels:
-              - conda-forge
-              - defaults
-            dependencies:
-              - python=3.8
-              - pip
-              - setuptools>=65.0
-              - pip:
-                - mlflow>=2.0.0
-                - scikit-learn>=1.0.0
-                - pandas>=1.3.0
-                - numpy>=1.21.0
-                - azureml-inference-server-http
+          conda_file: conda_env.yml
           EOF
       - name: Create deployment YAML dynamically
         run: |
-          cat <<EOF > deployment.yml
-          \$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+          cat > deployment.yml << 'EOF'
+          $schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
           name: blue
           endpoint_name: diabetes-endpoint
           model: azureml:diabetes-classifier:1
