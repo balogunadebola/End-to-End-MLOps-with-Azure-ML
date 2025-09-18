@@ -27,8 +27,8 @@ jobs:
           pip install -U azure-ai-ml azureml-mlflow
       - name: Create environment YAML
         run: |
-          cat <<EOF > environment.yml
-          \$schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
+          cat > environment.yml << 'EOF'
+          $schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
           name: diabetes-classifier-env
           version: 1
           image: mcr.microsoft.com/azureml/minimal-ubuntu20.04-py38-cpu-inference:latest
