@@ -72,8 +72,21 @@ jobs:
 
       - name: Deploy latest registered model
         run: |
-          # Deploy model (this will create the endpoint if it doesn't exist)
-          az ml online-deployment create \
-            --file deployment.yml \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
+          ENDPOINT_NAME=diabetes-endpoint
+          DEPLOYMENT_NAME=blue
+
+          # Check if deployment exists and create/update accordingly
+          if az ml online-deployment show --name $DEPLOYMENT_NAME --endpoint-name $ENDPOINT_NAME --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} > /dev/null 2>&1; then
+            echo "Deployment exists, updating..."
+            az ml online-deployment update \
+              --file deployment.yml \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+          else
+            echo "Deployment doesn't exist, creating..."
+            az ml online-deployment create \
+              --file deployment.yml \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
+              --all-traffic
+          fi
