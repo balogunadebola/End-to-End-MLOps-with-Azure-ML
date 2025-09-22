@@ -78,10 +78,30 @@ jobs:
           # Check if deployment exists and create/update accordingly
           if az ml online-deployment show --name $DEPLOYMENT_NAME --endpoint-name $ENDPOINT_NAME --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} > /dev/null 2>&1; then
             echo "Deployment exists, updating..."
-            az ml online-deployment update \
+            # Try to update, but if it fails due to unrecoverable state, delete and recreate
+            if ! az ml online-deployment update \
               --file deployment.yml \
               --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} 2>/dev/null; then
+              
+              echo "Update failed, deployment in unrecoverable state. Deleting and recreating..."
+              # Delete the failed deployment
+              az ml online-deployment delete \
+                --name $DEPLOYMENT_NAME \
+                --endpoint-name $ENDPOINT_NAME \
+                --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
+                --yes
+              
+              # Wait a bit for deletion to complete
+              sleep 30
+              # Create new deployment
+              az ml online-deployment create \
+                --file deployment.yml \
+                --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
+                --all-traffic
+            fi
           else
             echo "Deployment doesn't exist, creating..."
             az ml online-deployment create \
