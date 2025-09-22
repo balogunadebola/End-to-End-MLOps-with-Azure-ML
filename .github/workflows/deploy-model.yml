@@ -73,7 +73,7 @@ jobs:
       - name: Deploy latest registered model
         run: |
           # Deploy model (this will create the endpoint if it doesn't exist)
-          az ml online-deployment update \
+          az ml online-deployment create \
             --file deployment.yml \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
